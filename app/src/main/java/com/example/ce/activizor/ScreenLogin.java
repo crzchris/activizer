@@ -34,24 +34,29 @@ import java.net.URLEncoder;
 public class ScreenLogin extends AppCompatActivity {
 
     private Login mAuthTask = null;
-    private AppHelper appHelper = new AppHelper();
 
     // UI references.
     private EditText etPassword;
     private EditText etUserName;
     private View viewProgress;
     private View viewLoginForm;
+    ClassServerInt serverInt;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_screen);
+        setContentView(R.layout.activity_screen_login);
+        serverInt = new ClassServerInt(ScreenLogin.this);
 
         etUserName = (EditText) findViewById(R.id.login_userName);
         etPassword = (EditText) findViewById(R.id.login_password);
         viewLoginForm = findViewById(R.id.login_form);
         viewProgress = findViewById(R.id.login_progress);
+
+        // TODO DELETE AND ADD ACCOUNT MANAGER
+        etUserName.setText("user_1");
+        etPassword.setText("pw_user_1");
 
         etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -90,7 +95,7 @@ public class ScreenLogin extends AppCompatActivity {
                 LayoutInflater inflater = ScreenLogin.this.getLayoutInflater();
                 builder.setTitle("Register");
 
-                final View popupView = inflater.inflate(R.layout.activity_login_popup_newuser, null);
+                final View popupView = inflater.inflate(R.layout.activity_screen_login_popup_newuser, null);
                 builder.setView(popupView);
 
                 final EditText etUserName = (EditText) popupView.findViewById(R.id.et_login_newuser_user_name);
@@ -109,14 +114,12 @@ public class ScreenLogin extends AppCompatActivity {
 
                         if (userPw.equals(userPwRp)) {
 
-                            ServerInt servInt = new ServerInt();
-                            servInt.newUser(ScreenLogin.this, AppHelper.PHP_INSERT_USER, userName, userPw, userEmail);
-
+                            serverInt.dbQueries.insertUser(AppHelper.PHP_INSERT_USER, userName, userPw, userEmail);
                             dialog.dismiss();
 
                         } else {
 
-                            appHelper.showToastMessage(ScreenLogin.this, "passwords dont match");
+                            AppHelper.showToastMessage(ScreenLogin.this, "passwords dont match");
 
                         }
 
@@ -273,7 +276,7 @@ public class ScreenLogin extends AppCompatActivity {
                 data =  "?user_name=" + URLEncoder.encode(userName, "UTF-8");
                 data += "&user_pw=" + URLEncoder.encode(userPw, "UTF-8");
 
-                link = "http://10.0.2.2/phptest/login.php" + data;
+                link = AppHelper.SERVER_URL + AppHelper.PHP_LOGIN + data;
                 URL url = new URL(link);
                 System.out.println("DEBUG LINK: " + link);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -303,27 +306,34 @@ public class ScreenLogin extends AppCompatActivity {
                     int query_result = jsonObj.getInt("success");
                     if (query_result == 1) {
                         success = true;
+
+                        SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(ScreenLogin.this);
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(AppHelper.SP_USERID, "" + jsonObj.getInt("user_id"));
+                        editor.commit();
+
                     } else if (query_result == 0) {
-                        appHelper.showToastMessage(context, "user/pw bad");
+                        String query_error = jsonObj.getString("error");
+                        AppHelper.showToastMessage(context, query_error);
                     } else {
-                        appHelper.showToastMessage(context, "Something else");
+                        AppHelper.showToastMessage(context, "Something else");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    appHelper.showToastMessage(context, "Error parsing JSON data.");
+                    AppHelper.showToastMessage(context, "Error parsing JSON data.");
                 }
             } else {
-                appHelper.showToastMessage(context, "Couldn't get any JSON data.");
+                AppHelper.showToastMessage(context, "Couldn't get any JSON data.");
             }
 
             if (success) {
 
-                Intent goTo = new Intent(context, Menu.class);
+                Intent goTo = new Intent(context, AppHelper.CL_MENU);
                 context.startActivity(goTo);
 
             } else {
 
-                appHelper.showToastMessage(context, "Wrong userName/pw");
+                AppHelper.showToastMessage(context, "Error logging in");
 
             }
         }

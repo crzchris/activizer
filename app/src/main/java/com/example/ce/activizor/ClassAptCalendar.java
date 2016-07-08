@@ -29,14 +29,14 @@ public class ClassAptCalendar extends LinearLayout {
 
 
     private static final String DATE_FORMAT = "MMM yyyy";
-    private static final String LOGTAG = "DEBUG CTC:";
+    private static final String LOGTAG = "DEBUG ClassAptCalendar:";
+    private ClassDataBaseImage db;
     private String ACTIVITY = "";
-    private String USERNAME = "";
-    private ArrayList<Map> aptList;
+    private ArrayList<Map> eventList;
+    private ArrayList<Map> inviteList;
 
     private Context context;
 
-//    private LinearLayout header;
     private ImageView btnPrev;
     private ImageView btnNext;
     private TextView txtDate;
@@ -52,13 +52,9 @@ public class ClassAptCalendar extends LinearLayout {
 
         super(c);
         context = c;
+        db = new ClassDataBaseImage(context);
+        db.open();
 
-    }
-
-
-    public ArrayList<Map> getAppointmentList() {
-
-        return this.aptList;
 
     }
 
@@ -80,6 +76,18 @@ public class ClassAptCalendar extends LinearLayout {
 
     }
 
+    public ArrayList<Map> getEventList() {
+
+        return this.eventList;
+
+    }
+
+    public ArrayList<Map> getInviteList() {
+
+        return this.inviteList;
+
+    }
+
 
     public void setActivity(String act) {
 
@@ -87,17 +95,13 @@ public class ClassAptCalendar extends LinearLayout {
 
     }
 
-    public void setUserName(String user) {
-
-        USERNAME = user;
-
-    }
-
 
     private void initialize(Context context, AttributeSet attr) {
 
+        db = new ClassDataBaseImage(context);
+        db.open();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.content_appointment_calendar, this);
+        inflater.inflate(R.layout.content_screen_calendar, this);
         assignUiElements();
         assignClickHandlers();
 
@@ -106,7 +110,6 @@ public class ClassAptCalendar extends LinearLayout {
 
     private void assignUiElements() {
 
-//        header = (LinearLayout)findViewById(R.id.calendar_header);
         btnPrev = (ImageView)findViewById(R.id.calendar_prev_button);
         btnNext = (ImageView)findViewById(R.id.calendar_next_button);
         txtDate = (TextView)findViewById(R.id.calendar_date_display);
@@ -117,13 +120,16 @@ public class ClassAptCalendar extends LinearLayout {
 
     public void updateCalendar() {
 
-        HashSet<Date> events = getEventDates();
-        updateCalendar(events);
+        System.out.println(LOGTAG + "updateCalendar");
+
+        HashSet<Date> eventDays = getEventDates();
+        HashSet<Date> inviteDays = getInviteDates();
+        updateCalendar(eventDays, inviteDays);
 
     }
 
 
-    public void updateCalendar(HashSet<Date> events) {
+    public void updateCalendar(HashSet<Date> eventDays, HashSet<Date> inviteDays) {
 
         ArrayList<Date> cells = new ArrayList<>();
 
@@ -134,7 +140,6 @@ public class ClassAptCalendar extends LinearLayout {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 2;
 
-
         calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);
 
         while (cells.size() < 42) {
@@ -144,7 +149,7 @@ public class ClassAptCalendar extends LinearLayout {
 
         }
 
-        grid.setAdapter(new CalendarAdapter(getContext(), cells, events));
+        grid.setAdapter(new CalendarAdapter(getContext(), cells, eventDays, inviteDays));
 
         txtDate.setText(sdf.format(currentDate.getTime()));
 
@@ -154,12 +159,14 @@ public class ClassAptCalendar extends LinearLayout {
     private class CalendarAdapter extends ArrayAdapter<Date> {
 
         private HashSet<Date> eventDays;
+        private HashSet<Date> inviteDays;
         private LayoutInflater inflator;
 
-        public CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays) {
+        public CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays, HashSet<Date> inviteDays) {
 
-            super(context, R.layout.content_calendar_day, days);
+            super(context, R.layout.content_screen_calendar_day, days);
             this.eventDays = eventDays;
+            this.inviteDays = inviteDays;
             inflator = LayoutInflater.from(context);
 
         }
@@ -183,7 +190,7 @@ public class ClassAptCalendar extends LinearLayout {
 
             if (view == null) {
 
-                view = inflator.inflate(R.layout.content_calendar_day, parent, false);
+                view = inflator.inflate(R.layout.content_screen_calendar_day, parent, false);
 
             }
 
@@ -195,8 +202,6 @@ public class ClassAptCalendar extends LinearLayout {
 
                     calEvent.setTime(eventDate);
 
-                    System.out.println(LOGTAG + " SDF " + AppHelper.SDF_DEFAULT.format(calEvent.getTime()));
-
                     if (calEvent.get(Calendar.DAY_OF_MONTH) == day &&
                             calEvent.get(Calendar.MONTH) == month &&
                             calEvent.get(Calendar.YEAR) == year) {
@@ -207,13 +212,36 @@ public class ClassAptCalendar extends LinearLayout {
                 }
             }
 
+            if (inviteDays != null) {
+
+                for (Date inviteDate : inviteDays) {
+
+                    calEvent.setTime(inviteDate);
+
+                    if (calEvent.get(Calendar.DAY_OF_MONTH) == day &&
+                            calEvent.get(Calendar.MONTH) == month &&
+                            calEvent.get(Calendar.YEAR) == year) {
+
+                        if (eventDays.contains(inviteDate)) {
+
+                            view.setBackgroundResource(R.drawable.reminder_blue_yellow);
+
+                        } else {
+
+                            view.setBackgroundResource(R.drawable.reminder_yellow);
+
+                        }
+                    }
+                }
+            }
+
             // clear styling
             ((TextView)view).setTypeface(null, Typeface.NORMAL);
             ((TextView)view).setTextColor(Color.BLACK);
 
             if (month != currentDate.get(Calendar.MONTH) || year != currentDate.get(Calendar.YEAR))
             {
-                ((TextView)view).setTextColor(getResources().getColor(R.color.greyed_out));
+                ((TextView)view).setTextColor(getResources().getColor(R.color.grey_50));
             }
             if (day == calToday.get(Calendar.DAY_OF_MONTH) && month == calToday.get(Calendar.MONTH)
                     && year == calToday.get(Calendar.YEAR))
@@ -228,15 +256,10 @@ public class ClassAptCalendar extends LinearLayout {
         }
     }
 
-    public void setAppointmentsFromDB() {
+    public void setCalendarEventsFromDb() {
 
-        System.out.println(LOGTAG + "getAppointments");
-
-
-        DataBase info = new DataBase(context);
-        info.open();
-        aptList = info.getAppointmentsByDate(this.USERNAME, "%", this.ACTIVITY);
-        info.close();
+        eventList = db.dbQueries.getEventsByDate("%", this.ACTIVITY, true);
+        inviteList = db.dbQueries.getNotificationsEventsByUSerId(AppHelper.getUserId(context), this.ACTIVITY);
 
     }
 
@@ -245,15 +268,15 @@ public class ClassAptCalendar extends LinearLayout {
         HashSet<Date> events = new HashSet<>();
         SimpleDateFormat sdf = new SimpleDateFormat(AppHelper.DATEFORMAT);
 
-        for (Map apt : aptList) {
+        for (Map event : eventList) {
 
-            String dateString = apt.get(DataBase.DATE).toString();
+            String dateString = event.get(AppHelper.DB_EVENT_DATE).toString();
             try {
                 Date date = sdf.parse(dateString);
-              events.add(date);
+                events.add(date);
             } catch (ParseException e) {
 
-                //TODO add exception
+                e.printStackTrace();
 
             }
 
@@ -262,6 +285,28 @@ public class ClassAptCalendar extends LinearLayout {
         return events;
     }
 
+
+    private HashSet<Date> getInviteDates() {
+
+        HashSet<Date> invites = new HashSet<>();
+        SimpleDateFormat sdf = new SimpleDateFormat(AppHelper.DATEFORMAT);
+
+        for (Map invite : inviteList) {
+
+            String dateString = invite.get(AppHelper.DB_EVENT_DATE).toString();
+            try {
+                Date date = sdf.parse(dateString);
+                invites.add(date);
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+
+        return invites;
+    }
 
     private void assignClickHandlers()
     {
@@ -300,8 +345,6 @@ public class ClassAptCalendar extends LinearLayout {
 
         });
 
-
-        // long-pressing a day
         grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         {
 

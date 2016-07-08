@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_above="@+id/tv_whats_on_activity"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_question_mark"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_whats_on_activity"
+        android:layout_above="@+id/tv_whats_on_date"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_whats_on_date"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_whats_on_start_time"
+        android:layout_below="@+id/tv_whats_on_date"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_whats_on_location"
+        android:layout_below ="@+id/tv_whats_on_start_time"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_gravity="center_horizontal" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_whats_on_location"
+        android:layout_marginTop="50dp">
+
+        <Button
+            android:id="@+id/btn_whats_on_reject"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="No"/>
+
+        <Button
+            android:id="@+id/btn_whats_on_maybe"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:text="hmmm"/>
+
+        <Button
+            android:id="@+id/btn_whats_on_accept"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:text="I'm in"/>
+
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

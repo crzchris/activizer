@@ -12,8 +12,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Iterator;
 
 import Tools.AsyncFinishListener;
@@ -22,12 +24,15 @@ import Tools.AsyncFinishListener;
 public class ClassServerInt {
 
     Context context;
+    DbQueries dbQueries;
+
     private AsyncFinishListener asyncFinishListener;
     private String LOGTAG = "DEBUG ClassServerInt: ";
 
     public ClassServerInt(Context c) {
 
         context = c;
+        dbQueries = new DbQueries();
 
     }
 
@@ -41,58 +46,146 @@ public class ClassServerInt {
     }
 
 
-    public void newUser(Context context, String phpFile, String... userDetails) {
+    public class DbQueries {
 
-        String userName = userDetails[0];
-        String userPw = userDetails[1];
-        String userEmail = userDetails[2];
 
-        String parameters = "user_name=" + userName + "&user_pw=" + userPw + "&user_email=" + userEmail;
+        public void insertUser(String phpFile, String userName, String userPw,
+                               String userEmail) {
 
-        new QueryDb(context).execute(phpFile, parameters);
+            String parameters = "user_name=" + userName + "&user_pw=" + userPw + "&user_email=" + userEmail;
 
+            new QueryDb(context).execute(phpFile, parameters);
+
+        }
+
+        public void insertRows(String tableName, String columns, String values) {
+
+            String parameters = "table_name=" + tableName + "&columns=" + columns + "&values=" + values;
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_ROW, parameters);
+
+
+        }
+
+
+        public void insertUserAct(String userName, String activity) {
+
+            String parameters = "user_name=" + userName + "&activity_name=" + activity;
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_USER_ACT, parameters);
+
+        }
+
+
+        public void insertEvent(String phpFile, String userName, String activityName,
+                                String date, String startTime, String endTime,
+                                String location, String isPublic, String invitedIds) {
+
+
+            String parameters = "user_name=" + userName +
+                    "&activity_name=" + activityName +
+                    "&date=" + date +
+                    "&start_time=" + startTime +
+                    "&end_time=" + endTime +
+                    "&location=" + location +
+                    "&is_public=" + isPublic +
+                    "&invited_user_id_list=" + invitedIds;
+
+            new QueryDb(context).execute(phpFile, parameters);
+
+        }
+
+
+        public void deleteByKey(String tableName, String keyName, String keyValue) {
+
+            if (!keyValue.startsWith("('")) { keyValue = "('" + keyValue + "')"; };
+
+            String parameters = "table_name=" + tableName + "&key_name=" + keyName
+                    + "&key_value=" + keyValue;
+
+            new QueryDb(context).execute(AppHelper.PHP_DELETE_BY_KEY, parameters);
+
+        }
+
+
+        public void insertUserEvent(String userId, String eventId) {
+
+            String parameters = "table_name=" + AppHelper.DB_USER_EVENTS_TABLE
+                    + "&user_id=" + userId + "&event_id=" + eventId;
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_USER_EVENT, parameters);
+
+        }
+
+        public void insertFriendInvite(String senderUserId,
+                                       String recUserId) {
+
+            String parameters = "sender_user_id=" + senderUserId + "&rec_user_id=" + recUserId
+                    + "&is_friend_invite=true";
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_FRIEND_INVITE, parameters);
+
+        }
+
+
+        public void insertEventInvite(String senderUserId,
+                                      String recUserId, String eventId) {
+
+            String parameters = "sender_user_id=" + senderUserId + "&rec_user_id=" + recUserId
+                    + "&event_id=" + eventId + "&is_friend_invite=false";
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_FRIEND_INVITE, parameters);
+
+        }
+
+
+        public void insertUserContact(String userId_1, String userId_2) {
+
+            String parameters = "table_name=" + AppHelper.DB_USER_CONTACTS_TABLE +
+                    "&user_id_1=" + userId_1 + "&user_id_2=" + userId_2;
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_USER_CONTACT, parameters);
+
+
+        }
+
+
+        public void insertEventComment(String userId, String eventId, String commentText) {
+
+            try {
+
+                commentText = URLEncoder.encode(commentText, "UTF-8");
+
+            } catch  (UnsupportedEncodingException e) {
+
+                e.printStackTrace();
+
+            }
+
+            String parameters = "table_name=" + AppHelper.DB_COMMENTS_TABLE +
+                    "&user_id=" + userId + "&event_id=" + eventId + "&comment_text=" + commentText;
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_EVENT_COMMENT, parameters);
+
+        }
+
+        public void updateUserActivityTags(String taggeduserId, String actIds) {
+
+            String parameters = "table_name=" + AppHelper.DB_USER_CONTACT_ACT_TAGS_TABLE
+                    + "&user_id=" + AppHelper.getUserId(context)
+                    + "&tagged_user_id=" + taggeduserId
+                    + "&act_id_list=" + actIds;
+
+            new QueryDb(context).execute(AppHelper.PHP_UPDATE_USER_ACT_TAGS, parameters);
+
+        }
     }
 
-    public void newUserAct(Context context, String phpFile, String... actDetails) {
+    public void getNewRowsFromDbAndSync(String phpFile, String tableName,
+                                        String keyName, String keyList, String returnIds) {
 
-        String userName = actDetails[0];
-        String activity = actDetails[1];
-
-        String parameters = "user_name=" + userName + "&activity_name=" + activity;
-
-        new QueryDb(context).execute(phpFile, parameters);
-
-    }
-
-    public void newApt(Context context, String phpFile, String... aptDetails) {
-
-        String userName = aptDetails[0];
-        String activityName = aptDetails[1];
-        String date = aptDetails[2];
-        String startTime = aptDetails[3];
-        String endTime = aptDetails[4];
-        String location = aptDetails[5];
-
-        String parameters = "user_name=" + userName +
-                "&activity_name=" + activityName +
-                "&date=" + date +
-                "&start_time=" + startTime +
-                "&end_time=" + endTime +
-                "&location=" + location;
-
-        new QueryDb(context).execute(phpFile, parameters);
-
-    }
-
-    public void getNewRowsFromDbAndSync(Context context, String phpFile, String... userDetails) {
-
-        String table_name = userDetails[0];
-        String key_name = userDetails[1];
-        String key_list = userDetails[2];
-        String return_ids = userDetails[3];
-
-        String parameters = "table_name=" + table_name + "&key_name=" + key_name
-                + "&key_list=" + key_list + "&return_ids=" + return_ids ;
+        String parameters = "table_name=" + tableName + "&key_name=" + keyName
+                + "&key_list=" + keyList + "&return_ids=" + returnIds ;
 
         new DbSync(context).execute(phpFile, parameters);
 
@@ -126,9 +219,10 @@ public class ClassServerInt {
             return_ids = "false";
         }
 
-        getNewRowsFromDbAndSync(context, AppHelper.PHP_GET_NEWROWS, tableName, keyName, keyList, return_ids);
+        getNewRowsFromDbAndSync(AppHelper.PHP_SYNC_DB, tableName, keyName, keyList, return_ids);
 
     }
+
 
     public class QueryDb extends AsyncTask<String, Void, String> {
 
@@ -210,7 +304,9 @@ public class ClassServerInt {
         }
     }
 
+
     public class DbSync extends QueryDb {
+
 
         public DbSync(Context context) {
             super(context);
@@ -278,12 +374,13 @@ public class ClassServerInt {
 
                             if(jsonObj.has("all_ids")) {
 
-                                String c = jsonObj.getString("all_ids");
+                                String allIds =  jsonObj.getString("all_ids");
+                                if (allIds.equals("")) {allIds = "('')";}
 
                                 asyncFinishListener.processFinished(context, true,
                                         jsonObj.getString("table_name"),
                                         jsonObj.getString("key_name"),
-                                        jsonObj.getString("all_ids"));
+                                        allIds);
 
                             } else {
 

@@ -3,4 +3,46 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+
+    <!-- calendar -->
+    <color name="today">@color/primary_500</color>
+    <color name="greyed_out">@color/grey_50</color>
+
+    <color name="lime_50">#F9FBE7</color>
+    <color name="lime_200">#E6EE9C</color>
+    <color name="lime_500">#CDDC39</color>
+    <color name="lime_800">#9E9D24</color>
+    <color name="lime_900">#827717</color>
+
+    <color name="yellow_50">#FFFDE7</color>
+    <color name="yellow_200">#FFF59D</color>
+    <color name="yellow_500">#FFEB3B</color>
+    <color name="yellow_800">#F9A825</color>
+    <color name="yellow_900">#F57F17</color>
+
+    <color name="light_blue_50">#E1F5FE</color>
+    <color name="light_blue_200">#81D4FA</color>
+    <color name="light_blue_500">#03A9F4</color>
+    <color name="light_blue_800">#0277BD</color>
+    <color name="light_blue_900">#01579B</color>
+
+    <color name="grey_50">#FAFAFA</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="grey_800">#424242</color>
+    <color name="grey_900">#212121</color>
+
+    <color name="primary_50">#F9FBE7</color>
+    <color name="primary_200">#E6EE9C</color>
+    <color name="primary_500">#CDDC39</color>
+    <color name="primary_800">#9E9D24</color>
+    <color name="primary_900">#827717</color>
+
+    <color name="secondary_50">#E1F5FE</color>
+    <color name="secondary_200">#81D4FA</color>
+    <color name="secondary_500">#03A9F4</color>
+    <color name="secondary_800">#0277BD</color>
+    <color name="secondary_900">#01579B</color>
+    
 </resources>

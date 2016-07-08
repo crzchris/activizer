@@ -3,4 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_size_normal">32sp</dimen>
+    <dimen name="checkbox_size_normal">32sp</dimen>
 </resources>
