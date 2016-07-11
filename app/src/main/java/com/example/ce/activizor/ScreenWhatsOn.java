@@ -13,7 +13,7 @@ import java.util.Map;
 public class ScreenWhatsOn extends AppCompatActivity {
 
     Context context = ScreenWhatsOn.this;
-    String LogTag = "ScreenWhatsOn: ";
+    String LOGTAG = "ScreenWhatsOn: ";
 
     ClassDataBaseImage db;
     TextView tvActivity;

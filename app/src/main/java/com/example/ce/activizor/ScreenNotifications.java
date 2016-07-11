@@ -21,7 +21,7 @@ import Tools.AsyncFinishListener;
 public class ScreenNotifications extends AppCompatActivity {
 
     Context context;
-    String LogTag = "ScreenNotifications :";
+    String LOGTAG = "ScreenNotifications :";
     private ArrayList<Map> notificationList;
     ArrayAdapter adapterNotifications;
     ClassDataBaseImage db;
@@ -113,7 +113,7 @@ public class ScreenNotifications extends AppCompatActivity {
 
                     AppHelper.showToastMessage(context, "Sync Finished + delete");
 
-                    System.out.println(LogTag + "processFinished + delete");
+                    System.out.println(LOGTAG + "processFinished + delete");
                     ClassDataBaseImage db = new ClassDataBaseImage(context);
                     db.open();
                     db.deleteByExcludedId(tableName, keyName, goodIds);

@@ -95,7 +95,7 @@ public class ScreenLogin extends AppCompatActivity {
                 LayoutInflater inflater = ScreenLogin.this.getLayoutInflater();
                 builder.setTitle("Register");
 
-                final View popupView = inflater.inflate(R.layout.activity_screen_login_popup_newuser, null);
+                final View popupView = inflater.inflate(R.layout.content_screen_login_popup_newuser, null);
                 builder.setView(popupView);
 
                 final EditText etUserName = (EditText) popupView.findViewById(R.id.et_login_newuser_user_name);

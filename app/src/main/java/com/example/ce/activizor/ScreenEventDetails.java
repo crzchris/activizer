@@ -22,14 +22,13 @@ import Tools.AsyncFinishListener;
 
 public class ScreenEventDetails extends AppCompatActivity {
 
-    private String LogTag = "ScreenEventDetails: ";
+    private String LOGTAG = "ScreenEventDetails: ";
     private Context context = ScreenEventDetails.this;
     private ClassServerInt serverInt;
     private ClassDataBaseImage db;
     private TextView tvActivityName;
     private TextView tvDate;
     private TextView tvStartTime;
-    private TextView tvEndTime;
     private TextView tvLocation;
     private ListView lvParticipants;
     private ListView lvComments;
@@ -65,14 +64,12 @@ public class ScreenEventDetails extends AppCompatActivity {
         tvActivityName = (TextView) findViewById(R.id.tv_eventDetails_activity_name);
         tvDate = (TextView) findViewById(R.id.tv_eventDetails_event_date);
         tvStartTime = (TextView) findViewById(R.id.tv_eventDetails_event_st);
-        tvEndTime = (TextView) findViewById(R.id.tv_eventDetails_event_et);
         tvLocation = (TextView) findViewById(R.id.tv_eventDetails_event_loc);
         btnEdit = (Button) findViewById(R.id.btn_eventDetails_edit);
 
         tvActivityName.setText(event.get(AppHelper.DB_ACTIVITY_NAME).toString());
         tvDate.setText(event.get(AppHelper.DB_EVENT_DATE).toString());
         tvStartTime.setText(event.get(AppHelper.DB_EVENT_STARTTIME).toString());
-        tvEndTime.setText(event.get(AppHelper.DB_EVENT_ENDTIME).toString());
         tvLocation.setText(event.get(AppHelper.DB_EVENT_LOCATION).toString());
 
         if (event.get(AppHelper.DB_EVENT_USER_ID).toString().equals(AppHelper.getUserId(context))) {
@@ -116,7 +113,7 @@ public class ScreenEventDetails extends AppCompatActivity {
 
                 AppHelper.showToastMessage(context, "Sync Finished + delete");
 
-                System.out.println(LogTag + "processFinished + delete");
+                System.out.println(LOGTAG + "processFinished + delete");
                 ClassDataBaseImage db = new ClassDataBaseImage(context);
                 db.open();
                 db.deleteByExcludedId(tableName, keyName, goodIds);
@@ -258,7 +255,7 @@ public class ScreenEventDetails extends AppCompatActivity {
 
             }
 
-            System.out.println(LogTag + position);
+            System.out.println(LOGTAG + position);
 
             TextView tvUserName = (TextView)convertView.findViewById(R.id.tv_event_details_custom_list_user_name);
 

@@ -103,6 +103,8 @@ public class ClassServerInt {
             String parameters = "table_name=" + tableName + "&key_name=" + keyName
                     + "&key_value=" + keyValue;
 
+            System.out.println(LOGTAG + AppHelper.PHP_DELETE_BY_KEY + "?" + parameters);
+
             new QueryDb(context).execute(AppHelper.PHP_DELETE_BY_KEY, parameters);
 
         }
@@ -149,6 +151,16 @@ public class ClassServerInt {
 
         }
 
+
+        public void insertUserActLocation(String userId, String actId, String location) {
+
+            String parameters = "table_name=" + AppHelper.DB_USER_ACT_LOCATIONS_TABLE +
+                    "&user_id=" + userId + "&act_id=" + actId + "&location=" + location;
+
+            new QueryDb(context).execute(AppHelper.PHP_INSERT_USER_ACT_LOCATION, parameters);
+
+
+        }
 
         public void insertEventComment(String userId, String eventId, String commentText) {
 
@@ -245,6 +257,7 @@ public class ClassServerInt {
 
             System.out.println("DEBUG phpFile: " + phpFile);
             System.out.println("DEBUG parameters: " + parameters);
+            System.out.println("DEBUG all: http://localhost/phptest?" + phpFile + "/" + parameters);
 
             try {
                 url = new URL(AppHelper.SERVER_URL + phpFile);

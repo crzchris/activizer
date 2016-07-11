@@ -1,11 +1,16 @@
 package com.example.ce.activizor;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import Tools.AsyncFinishListener;
 
@@ -19,7 +24,7 @@ public class AppHelper {
 
     // GENERAL
     public static final String PROJECT = "com.ce.example.activizor";
-    public static final String LogTag = "AppHelper: ";
+    public static final String LOGTAG = "AppHelper: ";
 
     //URLs
 //    public static final String SERVER_URL = "http://10.0.2.2/phptest/";
@@ -28,6 +33,7 @@ public class AppHelper {
 
     // FORMAT
     public static final String DATEFORMAT = "yyyy-MM-dd";
+    public static final String DATEFORMATWEEKDAYS = "E";
     public static final String DATETIMEFORMAT = "yyyy-MM-dd hh:mm:ss";
     public static final String TIMEFORMAT = "HH:mm";
 
@@ -49,6 +55,7 @@ public class AppHelper {
     public static final String PHP_INSERT_EVENT_COMMENT = "insert_comment.php";
     public static final String PHP_DELETE_BY_KEY = "delete_by_key.php";
     public static final String PHP_UPDATE_USER_ACT_TAGS = "update_user_act_tags.php";
+    public static final String PHP_INSERT_USER_ACT_LOCATION = "insert_user_act_loc.php";
 
     // BUNDLE
     public static final String BUNDLE_ACTIVITYNAME = "activityName";
@@ -68,9 +75,10 @@ public class AppHelper {
     public static final Class CL_NOTIFICATIONS = ScreenNotifications.class;
     public static final Class CL_WHATSON = ScreenWhatsOn.class;
     public static final Class CL_ACTIVITIES = ScreenActivities.class;
+    public static final Class CL_ADDEVENT = ScreenAddEvent.class;
 
     // SERVER DATABASE TABLES
-    public static final int DB_VERSION = 25;
+    public static final int DB_VERSION = 30;
 
     // activities
     public static final String DB_ACTIVITY_TABLE = "activities";
@@ -140,6 +148,12 @@ public class AppHelper {
     public static final String DB_USER_CONTACT_ACT_TAG_USER_ID = "user_id";
     public static final String DB_USER_CONTACT_ACT_TAG_TAGGED_USER_ID = "tagged_user_id";
 
+    // user activity location
+    public static final String DB_USER_ACT_LOCATIONS_TABLE = "user_act_locations";
+    public static final String DB_USER_ACT_LOCATION_ID = "user_act_location_id";
+    public static final String DB_USER_ACT_LOCATION_USER_ID = "user_id";
+    public static final String DB_USER_ACT_LOCATION_ACT_ID = "act_id";
+    public static final String DB_USER_ACT_LOCATION_LOCATION = "location";
 
 
     public static String getUserId(Context context) {
@@ -186,6 +200,38 @@ public class AppHelper {
 
     }
 
+    public static void printArrayMap(ArrayList<Map> list) {
+        printArrayMap(list, "");
+    }
+
+    public static void printArrayMap(ArrayList<Map> list, String logTag) {
+
+        for (Map<String, String> map : list) {
+
+            for (Map.Entry<String,String> entry : map.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                System.out.println(LOGTAG + "printArrayMap: key=" + key + ", value=" + value);
+            }
+        }
+    }
+
+
+    public static void printContentValues(ContentValues cv)
+    {
+        Set<Map.Entry<String, Object>> s=cv.valueSet();
+        Iterator itr = s.iterator();
+
+        while(itr.hasNext())
+        {
+            Map.Entry me = (Map.Entry)itr.next();
+            String key = me.getKey().toString();
+            Object value =  me.getValue();
+
+            System.out.println(LOGTAG + "printContentValues: " + "key=:" + key + ", value=" + (String)(value == null?null:value.toString()));
+        }
+    }
+
 
     public static void syncTableAndListen(Context context, String tableName,
                                           String keyName, AsyncFinishListener listener) {
@@ -211,9 +257,9 @@ public class AppHelper {
             public void processFinished(Context context, Boolean isFinished, String tableName,
                                         String keyName, String goodIds) {
 
-                AppHelper.showToastMessage(context, "Sync Finished + delete");
+//                AppHelper.showToastMessage(context, "Sync Finished + delete");
 
-                System.out.println(LogTag + "processFinished + delete");
+                System.out.println(LOGTAG + "processFinished + delete");
                 ClassDataBaseImage db = new ClassDataBaseImage(context);
                 db.open();
                 db.deleteByExcludedId(tableName, keyName, goodIds);
@@ -240,12 +286,13 @@ public class AppHelper {
             public void processFinished(Context context, Boolean isFinished, String tableName,
                                         String keyName, String goodIds) {
 
-                AppHelper.showToastMessage(context, "Sync Finished + delete");
+//                AppHelper.showToastMessage(context, "Sync Finished + delete");
 
-                System.out.println(LogTag + "processFinished + delete");
+                System.out.println(LOGTAG + "processFinished + delete");
                 ClassDataBaseImage db = new ClassDataBaseImage(context);
                 db.open();
                 db.deleteByExcludedId(tableName, keyName, goodIds);
+                db.close();
             }
 
         });
@@ -262,6 +309,7 @@ public class AppHelper {
         serverInt.syncTable(AppHelper.DB_USER_CONTACT_ACT_TAGS_TABLE, AppHelper.DB_USER_CONTACT_ACT_TAG_ID, true);
 
     }
+
 
 
 }

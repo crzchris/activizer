@@ -10,7 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.ce.activizor.ScreenSocial"
-    tools:showIn="@layout/activity_screen_social">
+    tools:showIn="@layout/activity_screen_social"
+    android:background="@color/background">
 
 
 
@@ -19,25 +20,42 @@
         android:layout_height="wrap_content"
         android:id="@+id/rl_social_invite">
 
-        <EditText
-            android:layout_width="wrap_content"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/et_social_invite"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:background="@color/secondary_200"
+            android:id="@+id/dw_social_invite">
+
+            <AutoCompleteTextView
+                android:id="@+id/et_social_invite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_username"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/et_social_invite"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
+            style="@style/Button_prim_sec"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Invite"
             android:id="@+id/btn_social_invite"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_below="@+id/dw_social_invite"/>
 
 
     </RelativeLayout>
 
     <ListView
+        style="@style/ListView_sec"
         android:id="@+id/lv_social_friends"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

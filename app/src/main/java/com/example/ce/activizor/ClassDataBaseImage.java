@@ -17,7 +17,7 @@ public class ClassDataBaseImage {
 
     private static final int DATABASE_VERSION = AppHelper.DB_VERSION;
     private static String DATABASE_NAME = "ServerImage";
-    private String LogTag = "ClassDataBaseImage ";
+    private String LOGTAG = "ClassDataBaseImage ";
     private DbHelper myHelper;
     private Context context;
     public SQLiteDatabase dataBaseImage;
@@ -117,6 +117,16 @@ public class ClassDataBaseImage {
                     + AppHelper.DB_USER_CONTACT_ACT_TAG_TAGGED_USER_ID + " INTEGER NOT NULL);"
             );
 
+            db.execSQL("CREATE TABLE " + AppHelper.DB_USER_ACT_LOCATIONS_TABLE + " ("
+                    + AppHelper.DB_USER_ACT_LOCATION_ID + " INTEGER NOT NULL, "
+                    + AppHelper.DB_USER_ACT_LOCATION_USER_ID + " INTEGER NOT NULL, "
+                    + AppHelper.DB_USER_ACT_LOCATION_ACT_ID + " TEXT NOT NULL, "
+                    + AppHelper.DB_USER_ACT_LOCATION_LOCATION + " TEXT NOT NULL, "
+                    + "UNIQUE(" + AppHelper.DB_USER_ACT_LOCATION_ACT_ID + ", "
+                    + AppHelper.DB_USER_ACT_LOCATION_ACT_ID + ", "
+                    + AppHelper.DB_USER_ACT_LOCATION_LOCATION + ") ON CONFLICT IGNORE);"
+            );
+
         }
 
 
@@ -133,6 +143,7 @@ public class ClassDataBaseImage {
             db.execSQL("DROP TABLE IF EXISTS " + AppHelper.DB_NOT_INV_FRIEND_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + AppHelper.DB_NOT_INV_EVENT_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + AppHelper.DB_USER_CONTACT_ACT_TAGS_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + AppHelper.DB_USER_ACT_LOCATIONS_TABLE);
             onCreate(db);
 
         }
@@ -158,6 +169,7 @@ public class ClassDataBaseImage {
 
     public long addEntry(ContentValues dbEntries, String dbTable) {
 
+        AppHelper.printContentValues(dbEntries);
         return dataBaseImage.insert(dbTable, null, dbEntries);
 
     }
@@ -186,11 +198,11 @@ public class ClassDataBaseImage {
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<>();
 
             for (String col : columns) {
 
-                System.out.println(LogTag + "cursorToMap " + col + " " + c.getString(c.getColumnIndex(col)));
+                System.out.println(LOGTAG + "cursorToMap " + col + " " + c.getString(c.getColumnIndex(col)));
                 map.put(col, c.getString(c.getColumnIndex(col)));
 
             }
@@ -210,7 +222,7 @@ public class ClassDataBaseImage {
 
         String query = "DELETE FROM " + tableName + " WHERE " + keyName + " NOT IN " + goodIdList;
 
-        System.out.println(LogTag + query);
+        System.out.println(LOGTAG + query);
         dataBaseImage.execSQL(query);
 
     }
@@ -256,6 +268,18 @@ public class ClassDataBaseImage {
         }
 
 
+        public String getActIdByName(String actName) {
+
+            String query = "SELECT " + AppHelper.DB_ACTIVITY_ID + " FROM " + AppHelper.DB_ACTIVITY_TABLE
+                    + " WHERE " + AppHelper.DB_ACTIVITY_NAME + " = '" + actName + "'";
+
+            Cursor c = dataBaseImage.rawQuery(query, null);
+
+            return  cursorGetFirst(c);
+
+        }
+
+
         public ArrayList<Map> getUserActivities(String userId) {
 
             String[] columns = { AppHelper.DB_ACTIVITY_ID,
@@ -268,7 +292,7 @@ public class ClassDataBaseImage {
                     + " ON a." + AppHelper.DB_ACTIVITY_ID + " = ua." + AppHelper.DB_USER_ACTIVITY_ACT_ID
                     + " WHERE ua." + AppHelper.DB_USER_ACTIVITY_USER_ID + " like '" + userId + "'";
 
-            System.out.print(LogTag + query);
+            System.out.print(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -294,7 +318,7 @@ public class ClassDataBaseImage {
                     + " FROM " + AppHelper.DB_NOT_INV_FRIEND_TABLE + " nf "
                     + " WHERE nf." + AppHelper.DB_NOT_INV_FRIEND_REC_USER_ID + " = '" + userId + "'";
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -331,7 +355,7 @@ public class ClassDataBaseImage {
                     + " AND a." + AppHelper.DB_ACTIVITY_NAME + " LIKE '" + activity + "'";
 
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -405,7 +429,7 @@ public class ClassDataBaseImage {
                     + " WHERE ue." + AppHelper.DB_USER_EVENT_EVENT_ID + " = '" + eventId + "'";
 
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -427,7 +451,7 @@ public class ClassDataBaseImage {
                     + " WHERE uc." + AppHelper.DB_USER_CONTACT_USER_ID_1 + " = '" + userId + "'";
 
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -451,7 +475,7 @@ public class ClassDataBaseImage {
                     + " WHERE c." + AppHelper.DB_COMMENT_EVENT_ID + " = '" + eventId + "'";
 
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -489,7 +513,7 @@ public class ClassDataBaseImage {
                     + " ) IS NULL";
 
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -511,7 +535,7 @@ public class ClassDataBaseImage {
                     + " = '" + taggedUserId + "'";
 
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
@@ -547,12 +571,28 @@ public class ClassDataBaseImage {
                     + " AND ucat." + AppHelper.DB_USER_CONTACT_ACT_TAG_ACT_ID + " = ua." + AppHelper.DB_USER_ACTIVITY_ACT_ID
                     + " WHERE ua." + AppHelper.DB_USER_ID + " = '" + userId + "'";
 
-            System.out.println(LogTag + query);
+            System.out.println(LOGTAG + query);
 
             Cursor c = dataBaseImage.rawQuery(query, null);
 
             return cursorToMap(c, columns);
 
+        }
+
+        public ArrayList<Map> getUserActLocations(String userId, String actId) {
+
+            String[] columns = { AppHelper.DB_USER_ACT_LOCATION_LOCATION, };
+
+            String query = "SELECT uel." + AppHelper.DB_USER_ACT_LOCATION_LOCATION
+                    + " FROM " + AppHelper.DB_USER_ACT_LOCATIONS_TABLE + " uel "
+                    + " WHERE " + AppHelper.DB_USER_ACT_LOCATION_USER_ID + " = '" + userId + "' "
+                    + " AND " + AppHelper.DB_USER_ACT_LOCATION_ACT_ID + " = '" + actId + "'";
+
+            System.out.println(LOGTAG + query);
+
+            Cursor c = dataBaseImage.rawQuery(query, null);
+
+            return cursorToMap(c, columns);
 
         }
 

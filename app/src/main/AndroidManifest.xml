@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ce.activizor" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ce.activizor">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,25 +9,30 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".ScreenWelcome" >
+        android:theme="@style/AppTheme">
+
+
+        <activity android:name=".ScreenWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScreenMenu" />
+
+        <activity
+            android:name=".ScreenMenu"
+            android:label="@string/title_activity_screen_menu" />/>
         <activity
             android:name=".ScreenLogin"
-            android:label="@string/title_activity_login_screen" />
+            android:label="@string/title_activity_screen_login" />
         <activity
             android:name=".ScreenCalendar"
-            android:hardwareAccelerated="true" />
+            android:label="@string/title_activity_screen_calendar" />
+            <!--android:hardwareAccelerated="true" />-->
         <activity
             android:name=".ScreenEventDetails"
-            android:label="@string/title_activity_event_details"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_event_details" />
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
         <activity
             android:name=".ScreenSocial"
             android:label="@string/title_activity_screen_social"
@@ -37,11 +41,19 @@
             android:name=".ScreenNotifications"
             android:label="@string/title_activity_screen_notifications"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ScreenWhatsOn" />
+        <activity
+            android:name=".ScreenWhatsOn"
+            android:label="@string/title_activity_screen_whatson" />
         <activity
             android:name=".ScreenActivities"
             android:label="@string/title_activity_screen_activities"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ScreenAddEvent"
+            android:label="@string/title_activity_screen_add_event"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

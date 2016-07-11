@@ -3,10 +3,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <ListView
+        style="@style/ListView_sec"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/lv_aux_popup_listview">
     </ListView>
 

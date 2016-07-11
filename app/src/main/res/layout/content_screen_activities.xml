@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,7 +11,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.ce.activizor.ScreenActivities"
-    tools:showIn="@layout/activity_screen_activities">
+    tools:showIn="@layout/activity_screen_activities"
+    android:background="@color/background">
 
     <EditText
         android:layout_width="wrap_content"
@@ -22,7 +24,7 @@
         android:layout_alignParentEnd="true" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
+        style="@style/Button_prim_sec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add activity"

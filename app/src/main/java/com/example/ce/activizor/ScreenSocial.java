@@ -24,7 +24,7 @@ import java.util.Map;
 public class ScreenSocial extends AppCompatActivity {
 
     private Context context;
-    private String LogTag = "ScreenSocial: ";
+    private String LOGTAG = "ScreenSocial: ";
     private ClassDataBaseImage db;
     private ClassServerInt serverInt;
     private ArrayList<Map> friendList;
@@ -85,16 +85,23 @@ public class ScreenSocial extends AppCompatActivity {
 
                     AppHelper.showToastMessage(context, "User not found: " + recName);
 
-                } else {
+                }
+
+                else if (recName.equals(AppHelper.SP_USERNAME)) {
+
+                    AppHelper.showToastMessage(context, "That's you... ");
+
+                }
+
+                else {
 
                     ClassServerInt serverInt = new ClassServerInt(context);
+                    etRecName.setText("");
                     serverInt.dbQueries.insertFriendInvite(AppHelper.getUserId(context), recUserId);
 
                 }
             }
         });
-
-
     }
 
 
@@ -128,7 +135,7 @@ public class ScreenSocial extends AppCompatActivity {
                         for (int i = 0; i < actList.size(); i++) {
                             Map act = actList.get(i);
 
-                            System.out.println(LogTag + "LOOP " + act.get(AppHelper.DB_ACTIVITY_NAME) + " " + act.get("is_tagged"));
+                            System.out.println(LOGTAG + "LOOP " + act.get(AppHelper.DB_ACTIVITY_NAME) + " " + act.get("is_tagged"));
 
 
                         }
@@ -145,7 +152,7 @@ public class ScreenSocial extends AppCompatActivity {
 
                         taggedAct = "(" + taggedAct.substring(0, taggedAct.length() - 1) + ")";
 
-                        System.out.println(LogTag + "taggedAct" + taggedAct);
+                        System.out.println(LOGTAG + "taggedAct" + taggedAct);
 
                         serverInt.dbQueries.updateUserActivityTags(taggedUserId, taggedAct);
                         AppHelper.syncTable(context, AppHelper.DB_USER_CONTACT_ACT_TAGS_TABLE,
@@ -204,7 +211,7 @@ public class ScreenSocial extends AppCompatActivity {
 
             if (convertView == null) {
 
-                convertView = LayoutInflater.from(context).inflate(R.layout.content_screen_social_custom_listview_friends, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.aux_listview_simple_med, parent, false);
 
             }
 
@@ -240,11 +247,11 @@ public class ScreenSocial extends AppCompatActivity {
             System.out.println("getView called");
             CheckBox cbIsTagged;
             TextView tvActName;
-            System.out.println (LogTag + position + " X ");
+            System.out.println (LOGTAG + position + " X ");
             Map currentAct = actList.get(position);
 
-            System.out.println (LogTag + position + " A " + currentAct.get(AppHelper.DB_ACTIVITY_NAME).toString() + " " + currentAct.get("is_tagged").toString());
-            System.out.println (LogTag + position + " B  " + currentAct.get(AppHelper.DB_ACTIVITY_NAME).toString() + " " + Boolean.valueOf(currentAct.get("is_tagged").toString()));
+            System.out.println (LOGTAG + position + " A " + currentAct.get(AppHelper.DB_ACTIVITY_NAME).toString() + " " + currentAct.get("is_tagged").toString());
+            System.out.println (LOGTAG + position + " B  " + currentAct.get(AppHelper.DB_ACTIVITY_NAME).toString() + " " + Boolean.valueOf(currentAct.get("is_tagged").toString()));
 
             if (convertView == null) {
 
